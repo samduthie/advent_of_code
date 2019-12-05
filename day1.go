@@ -8,8 +8,16 @@ import (
 	"strconv"
 )
 
+func moreFuel(fuel int) int {
+	if fuel <= 0 {
+		return 0
+	}
+	var total_fuel = moreFuel(fuel/3 -2)
+	return fuel + total_fuel
+}
+
 func main() {
-	var total_fuel_needed = 0
+	var total_fuel = 0
 	
 	file, err := os.Open("day1.txt")
     if err != nil {
@@ -26,12 +34,15 @@ func main() {
         	log.Fatal(err)
         }
 
-        total_fuel_needed += mass/3 -2
+        var fuel = mass/3-2
+        total_fuel += moreFuel(fuel)
     }
 
     if err := scanner.Err(); err != nil {
         log.Fatal(err)
     }
 
-    fmt.Println(total_fuel_needed)
+    // var recFuel = moreFuel(total_fuel)
+    fmt.Println(total_fuel)
 }
+
