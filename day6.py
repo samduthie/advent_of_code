@@ -44,26 +44,29 @@ def main():
 			child_name = l[1]
 	
 			parent = get_node(nodes, parent_name)
+			child = get_node(nodes, child_name)
+
 
 			print("parent", parent)
 
 			if parent:
 				print("PARENT HERE")
-				child = Node(name=child_name, parent=parent)
-				print("creating child", child, "with parent: ", child.parent, "!")
-				print("this node has {} orbits".format(child))
-				nodes.append(child)
-				print("xxx")
+				if not child:
+					child = Node(name=child_name, parent=parent)
+					print("creating child", child, "with parent: ", child.parent, "!")
+					print("this node has {} orbits".format(child))
+					nodes.append(child)
+					print("xxx")
 			else:
-				if child_name == '5BK':
-					print("parsing 5bk", child_name, parent_name)
-					raise Exception
+				
 				parent = Node(name=parent_name)
-				child = Node(name=child_name, parent=parent)
+				
 				
 				print("creating parent", parent)
 				nodes.append(parent)
-				nodes.append(child)
+				if not child:
+					child = Node(name=child_name, parent=parent)
+					nodes.append(child)
 
 	with open('day6.txt', 'r') as f:
 		for line in f:
@@ -74,12 +77,12 @@ def main():
 			parent = get_node(nodes, parent_name)
 			child = get_node(nodes, child_name)
 
-
+			
 
 			if not child.parent:
-				nodes.pop(nodes.index(child))
-				child.parent = parent
-				nodes.append(child)
+				i = nodes.index(child)
+				nodes[i].parent = parent
+				
 
 
 
