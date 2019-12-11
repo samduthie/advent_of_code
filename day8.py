@@ -75,42 +75,34 @@ def main():
 
 	print("answer:", fewest_zero_layer.no_of_nums(1) * fewest_zero_layer.no_of_nums(2))
 
+	#part 2
 	final_layer = [0 for i in range(width*length)]
-	print(len(final_layer))
-
-	layer_indexes = range(len(layers))
+	layer_indexes = range(width*length)
 	while layer_indexes:
 		layer = layers.pop(0)
-		print("indexes left", layer_indexes)
-		print("final: ",final_layer)
 		for  i in layer_indexes:
-			print("looking at final index: ", i)
 			pixel = layer.digits[i]
 			if pixel == 2:
-				continue
-			if pixel == 1: # white
-				final_layer[i] = 1
+				pass
+			elif pixel == 1: # white
+				final_layer[i] = '#'
 				index_to_remove = layer_indexes.index(i)
 				layer_indexes.pop(index_to_remove)
-			if pixel == 0: # black
-				final_layer[i] = 0
+			elif pixel == 0: # black
+				final_layer[i] = ' '
 				index_to_remove = layer_indexes.index(i)
 				layer_indexes.pop(index_to_remove)
 		if not layers:
+			for i in layer_indexes:
+				final_layer[i] = '#'
 			break
 
-
-	print(len(final_layer))
-
-	print(final_layer)
-	final_layer_as_str = ['#' if i == 1 else ' ' for i in final_layer ]
-
 	counter = 0
-	for i in final_layer_as_str:
+	for i in final_layer:
 		counter = counter + 1
 		print(i),
 		if counter == 25:
-			print("\n")
+			print("")
 			counter = 0
 
 
