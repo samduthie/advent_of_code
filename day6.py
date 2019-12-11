@@ -1,6 +1,4 @@
-# list of orbits
-# H orbits G orbits B orbits COM
-# C orbits B orbits COM
+import datetime
 
 class Node(object):
 	parent = None
@@ -30,9 +28,22 @@ def get_node(nodes, name):
 
 	return None
 
+def commonAncestor(basenode, node):
+		if not node:
+			return None
+
+		if node.parent == basenode:
+			return node.parent
+
+		return commonAncestor(basenode, node.parent)
+
+def get_node_length(parent_node, child_node, length=0):
+		if parent_node == child_node:
+			return length
+		return get_node_length(parent_node, child_node.parent, length=length+1)
+
 def main():
 	nodes = []
-	# node_names = []
 
 	parent_names = []
 	child_names = []
@@ -46,29 +57,20 @@ def main():
 			parent = get_node(nodes, parent_name)
 			child = get_node(nodes, child_name)
 
-
-			print("parent", parent)
-
 			if parent:
-				print("PARENT HERE")
 				if not child:
 					child = Node(name=child_name, parent=parent)
-					print("creating child", child, "with parent: ", child.parent, "!")
-					print("this node has {} orbits".format(child))
 					nodes.append(child)
-					print("xxx")
 			else:
 				
 				parent = Node(name=parent_name)
 				
-				
-				print("creating parent", parent)
 				nodes.append(parent)
 				if not child:
 					child = Node(name=child_name, parent=parent)
 					nodes.append(child)
 
-	with open('day6.txt', 'r') as f:
+	with open('day6.txt', 'r') as f:  # todo use hash map instead of this
 		for line in f:
 			l = line.rstrip().split(')')
 			parent_name = l[0]
@@ -77,40 +79,35 @@ def main():
 			parent = get_node(nodes, parent_name)
 			child = get_node(nodes, child_name)
 
-			
-
 			if not child.parent:
 				i = nodes.index(child)
 				nodes[i].parent = parent
-				
-
-
-
-	# testng
-	n = Node(name="com")
-	child = Node(name="a", parent=n)
-	child_2 = Node(name="b", parent=child)
-
-	print(child_2.no_of_parents())
-
-	print("nodes", nodes)
 
 	total_node_calc = 0
 	for node in nodes:
-		print("{} has {} orbits".format(node, node.no_of_parents()))
 		total_node_calc = total_node_calc+node.no_of_parents()
 
-	# 	if node.name == 'J':
-	# 		print("parent of j is: ", node.parent)
-	# 		print("grandparent of j is: ", node.parent.parent)
-
-	# print(get_node(nodes, 'VQJ').parent)
-
-	# print(get_node(nodes, '5BK').parent)
-
-	print(len(nodes))
+	san = get_node(nodes, 'SAN')
+	you = get_node(nodes, 'YOU')
 
 
-	print(total_node_calc)
+	common_ancestor = None
+	parent_of_san = san.parent
+
+	while not common_ancestor:
+		common_ancestor = commonAncestor(parent_of_san, you)
+		parent_of_san = parent_of_san.parent
+
+	def get_node_length(parent_node, child_node, length=0):
+		if parent_node == child_node:
+			return length
+		return get_node_length(parent_node, child_node.parent, length=length+1)
+
+	san_to_ancestor = get_node_length(common_ancestor, san)-1
+	you_to_ancestor = get_node_length(common_ancestor, you)-1
+
+	answer = san_to_ancestor + you_to_ancestor
+
+	print("no is: ", answer)
 
 main()
