@@ -54,14 +54,9 @@ def makeLayers(width,height, input):
 
 
 def main():
-	# create layer
-	# add 6 rows to layer
-	# add 25 pixels to the row.
-	# when all rows and layers are done create a new layer
+	width = 25
+	length = 6
 
-	# get layer containing fewest 0s
-	# how many 1s in that layer * no of 2s in that layer
-	nums = [1,1,1,3,4,5,6,7,8,1,0,1,2]
 	nums = []
 
 	with open('day8.txt', 'r') as f:
@@ -69,7 +64,7 @@ def main():
 			for char in line:
 				nums.append(int(char))
 
-	layers = makeLayers(25,6, nums)
+	layers = makeLayers(width, length, nums)
 
 	fewest_zeros_in_layer = layers[0].no_of_nums(0)
 	fewest_zero_layer = None
@@ -78,12 +73,45 @@ def main():
 			fewest_zero_layer = layer
 			fewest_zeros_in_layer = layer.no_of_nums(0)
 
-	print("no of layers", len(layers))
-	print(layer.no_of_nums(0))
-	print(layer.no_of_nums(1))
-	print(layer.no_of_nums(2))
 	print("answer:", fewest_zero_layer.no_of_nums(1) * fewest_zero_layer.no_of_nums(2))
 
+	final_layer = [0 for i in range(width*length)]
+	print(len(final_layer))
+
+	layer_indexes = range(len(layers))
+	while layer_indexes:
+		layer = layers.pop(0)
+		print("indexes left", layer_indexes)
+		print("final: ",final_layer)
+		for  i in layer_indexes:
+			print("looking at final index: ", i)
+			pixel = layer.digits[i]
+			if pixel == 2:
+				continue
+			if pixel == 1: # white
+				final_layer[i] = 1
+				index_to_remove = layer_indexes.index(i)
+				layer_indexes.pop(index_to_remove)
+			if pixel == 0: # black
+				final_layer[i] = 0
+				index_to_remove = layer_indexes.index(i)
+				layer_indexes.pop(index_to_remove)
+		if not layers:
+			break
+
+
+	print(len(final_layer))
+
+	print(final_layer)
+	final_layer_as_str = ['#' if i == 1 else ' ' for i in final_layer ]
+
+	counter = 0
+	for i in final_layer_as_str:
+		counter = counter + 1
+		print(i),
+		if counter == 25:
+			print("\n")
+			counter = 0
 
 
 
