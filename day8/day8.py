@@ -1,37 +1,34 @@
 class Layer():
 	wide = 0
 	tall = 0
-	limit = 0
-	digits = []
 
 	def __init__(self, wide, tall):
 		self.wide=wide
 		self.tall=tall
-		self.limit = wide*tall
-		self.digits = []
+		self._digits = []
 
 	def __repr__(self):
-		return str(self.digits)
+		return str(self._digits)
 
 	def __len__(self):
-		return len(self.digits)
+		return len(self._digits)
+
+	def __getitem__(self, item):
+		return self._digits[item]
 
 	@property
 	def is_full(self):
 		layer_capacity = self.wide*self.tall
-		if len(self.digits) > layer_capacity:
-			raise Exception("layer capacity breached")
-		return len(self.digits) == layer_capacity
+		return len(self._digits) == layer_capacity
 
 	def insert(self, n):
-		self.digits.append(n)
+		self._digits.append(n)
 
 	def no_of_nums(self, num):
 		no_of_num = 0
-		for i in self.digits:
+		for i in self._digits:
 			if i == num:
 				no_of_num = no_of_num+1
-
 		return no_of_num
 
 def makeLayers(width,height, input):
@@ -39,7 +36,6 @@ def makeLayers(width,height, input):
 
 	current_layer = Layer(width, height)
 	
-
 	while input:
 		if current_layer.is_full:
 			layers.append(current_layer)
@@ -76,26 +72,22 @@ def main():
 	print("answer:", fewest_zero_layer.no_of_nums(1) * fewest_zero_layer.no_of_nums(2))
 
 	#part 2
-	final_layer = [0 for i in range(width*length)]
+	final_layer = ['#' for i in range(width*length)]
 	layer_indexes = range(width*length)
-	while layer_indexes:
+	
+	while layers:
 		layer = layers.pop(0)
-		for  i in layer_indexes:
-			pixel = layer.digits[i]
-			if pixel == 2:
-				pass
-			elif pixel == 1: # white
+		for i in layer_indexes:
+			pixel = layer[i]
+			if pixel == 1: # white
 				final_layer[i] = '#'
-				index_to_remove = layer_indexes.index(i)
-				layer_indexes.pop(index_to_remove)
 			elif pixel == 0: # black
 				final_layer[i] = ' '
-				index_to_remove = layer_indexes.index(i)
-				layer_indexes.pop(index_to_remove)
-		if not layers:
-			for i in layer_indexes:
-				final_layer[i] = '#'
-			break
+			else:
+				continue
+		
+			index_to_remove = layer_indexes.index(i)
+			layer_indexes.pop(index_to_remove)
 
 	counter = 0
 	for i in final_layer:
@@ -104,7 +96,5 @@ def main():
 		if counter == 25:
 			print("")
 			counter = 0
-
-
 
 main()
